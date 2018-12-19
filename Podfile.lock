@@ -1,0 +1,16 @@
+PODS:
+  - HTMLKit (2.1.5)
+
+DEPENDENCIES:
+  - HTMLKit (~> 2.1)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - HTMLKit
+
+SPEC CHECKSUMS:
+  HTMLKit: 91dbd983c94f264c6ddea27d317f5a66368dd20b
+
+PODFILE CHECKSUM: 85664475d32832586e0132cd22beaaeaed36ecd9
+
+COCOAPODS: 1.5.3
