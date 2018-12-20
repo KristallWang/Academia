@@ -10,5 +10,13 @@
             </PersistentString>
          </PersistentStrings>
       </ContextState>
+      <ContextState
+         contextName = "GetPublicationDetails:Libgen.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "NSLog(@&quot;%@&quot;, detailURL)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
    </ContextStates>
 </VariablesViewState>

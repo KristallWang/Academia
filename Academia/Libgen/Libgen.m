@@ -50,10 +50,6 @@ NSArray *ExtractIdsFromPage(NSString *html, NSString **error) {
 }
 
 NSArray/*<Publication *>*/ * __nullable SearchForPublications(NSString *keywords, NSString **error) {
-    NSArray *pubs = GetPublicationDetails([NSArray arrayWithObjects:@"71491", @"71887", nil], nil);
-    [pubs makeObjectsPerformSelector:@selector(writeToUserDefaults)];
-//    NSLog(@"%lu", (unsigned long)[[Publication getPubObjs] count]);
-    
     NSError *err;
     NSURL *searchURL = [NSURL URLWithString:[NSString stringWithFormat:libgenIoSearchFormat, keywords, 1]];
     NSData *response = [NSData dataWithContentsOfURL:searchURL options:NSDataReadingMappedIfSafe error:&err];
@@ -63,7 +59,6 @@ NSArray/*<Publication *>*/ * __nullable SearchForPublications(NSString *keywords
     }
     NSString *html = [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding];
     
-    NSLog(@"%@", paginatorNumberRegex);
     NSRegularExpression *paginatorRegex = [NSRegularExpression regularExpressionWithPattern:paginatorNumberRegex options:NSRegularExpressionDotMatchesLineSeparators error:&err];
     if (err.code){
         *error = err.localizedDescription;
@@ -111,8 +106,30 @@ NSArray/*<Publication *>*/ * __nullable SearchForPublications(NSString *keywords
     }];
     NSLog(@"%@", ids);
     
+//    NSString *errStr;
+//    NSArray *res = GetPublicationDetails(ids, &errStr);
+//    if (errStr) {
+//        *error = errStr;
+//        return nil;
+//    }
+    
+#define MAX_IDS_PER_REQUEST 20
+    int length    = ids.count,
+        round     = length / MAX_IDS_PER_REQUEST,
+        remainder = length - (round * MAX_IDS_PER_REQUEST);
+    NSMutableArray *res = [[NSMutableArray alloc] init];
     NSString *errStr;
-    NSArray *res = GetPublicationDetails(ids, &errStr);
+    int i;
+    for (i = 0; i < round; i++) {
+        NSArray *subIds = [ids subarrayWithRange:NSMakeRange(i * MAX_IDS_PER_REQUEST, MAX_IDS_PER_REQUEST)];
+        NSArray *subPub = GetPublicationDetails(subIds, &errStr);
+        if (errStr) {
+            *error = errStr;
+            return nil;
+        }
+        [res addObjectsFromArray:subPub];
+    }
+    [res addObjectsFromArray:GetPublicationDetails([ids subarrayWithRange:NSMakeRange(i * MAX_IDS_PER_REQUEST, remainder)], &errStr)];
     if (errStr) {
         *error = errStr;
         return nil;

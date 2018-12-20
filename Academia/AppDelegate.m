@@ -19,7 +19,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     NSString *error;
-    NSArray *res = SearchForPublications(@"Herstein+Abstract+Algebra", &error);
+    NSArray *res = SearchForPublications(@"manifold", &error);
     NSLog(@"%@", res);
     return YES;
 }
